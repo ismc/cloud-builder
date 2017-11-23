@@ -23,9 +23,6 @@
   gather_facts: False
   tasks:
 
-    # - debug: var=hostvars[inventory_hostname]
-    # - debug: var=interfaces
-
     - name: wait for SSH prompt (timeout 10min)
       wait_for:
         port: 22
@@ -72,20 +69,11 @@
   gather_facts: False
   tasks:
 
-    # - debug: var=hostvars[inventory_hostname]
-
     - name: wait for SSH prompt (timeout 10min)
       wait_for:
         port: 22
         host: "{{ ansible_host }}"
         timeout: 600
-
-    # - name: Configure hostname for {{ inventory_hostname }}
-    #   net_system:
-    #     hostname: "{{ inventory_hostname }}"
-    #     domain_name: 'demo.foo'
-
-    - debug: var=interfaces
 
     - name: Set hostname
       eos_config:

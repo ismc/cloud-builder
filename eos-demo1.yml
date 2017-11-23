@@ -25,7 +25,7 @@ vpc_list:
     acl_list:
       - rtr-acl
     networks:
-      - { name: "{{ cloud_name }}-outside", cidr: "10.0.0.0/24", az: "{{ cloud_region }}a", default: yes }
+      - { name: "{{ cloud_name }}-outside", cidr: "10.0.0.0/24", az: "{{ cloud_region }}a" }
     instances:
       - name: "transit-rtr"
         size: medium
@@ -50,7 +50,7 @@ vpc_list:
       - host-acl
       - rtr-acl
     networks:
-      - { name: "{{ cloud_name }}-outside", cidr: "10.1.0.0/24", az: "{{ cloud_region }}a", default: yes  }
+      - { name: "{{ cloud_name }}-outside", cidr: "10.1.0.0/24", az: "{{ cloud_region }}a" }
       - { name: "{{ cloud_name }}-inside", cidr: "10.1.1.0/24", az: "{{ cloud_region }}a" }
     instances:
       - name: "vpc1-host1"
@@ -60,7 +60,7 @@ vpc_list:
         interfaces:
           - subnet: "{{ cloud_name }}-inside"
             acl: host-acl
-            public_ip: false
+            public_ip: true
         tags:
           Owner: "{{ cloud_name }}"
           groups: ssh
@@ -75,14 +75,14 @@ vpc_list:
             public_ip: true
           - name: ethernet2
             subnet: "{{ cloud_name }}-inside"
+            acl: rtr-acl
             private_ip_cidr: '10.1.1.254/24'
-            gateway: yes
         tags:
           Owner: "{{ cloud_name }}"
           network_os: eos
           groups: "routers,spokes"
-    # routes:
-    #   - { subnet: "{{ cloud_name }}-inside", cidr: "0.0.0.0/0", instance: "vpc1-rtr" }
+    routes:
+      - { subnet: "{{ cloud_name }}-inside", cidr: "10.0.0.0/8", instance: "vpc1-rtr" }
   - name: "{{ cloud_name }}_vpc2"
     provider: "{{ cloud_provider }}"
     region: "{{ cloud_region }}"
@@ -93,7 +93,7 @@ vpc_list:
       - host-acl
       - rtr-acl
     networks:
-      - { name: "{{ cloud_name }}-outside", cidr: "10.2.0.0/24", az: "{{ cloud_region }}a", default: yes  }
+      - { name: "{{ cloud_name }}-outside", cidr: "10.2.0.0/24", az: "{{ cloud_region }}a" }
       - { name: "{{ cloud_name }}-inside", cidr: "10.2.1.0/24", az: "{{ cloud_region }}a" }
     instances:
       - name: "vpc2-host1"
@@ -118,14 +118,13 @@ vpc_list:
             public_ip: true
           - name: ethernet2
             subnet: "{{ cloud_name }}-inside"
+            acl: rtr-acl
             private_ip_cidr: '10.2.1.254/24'
             gateway: yes
         tags:
           Owner: "{{ cloud_name }}"
           network_os: eos
           groups: "routers,spokes"
-    # routes:
-    #   - { subnet: "{{ cloud_name }}-inside", cidr: "0.0.0.0/0", instance: "vpc2-rtr" }
 tunnels:
   - { index: 0, key: 101, src_host: "transit-rtr", src_ip_addr: "10.255.0.1/30", dst_host: "vpc1-rtr", dst_ip_addr: "10.255.0.2/30" }
   - { index: 1, key: 101, src_host: "transit-rtr", src_ip_addr: "10.255.0.5/30", dst_host: "vpc2-rtr", dst_ip_addr: "10.255.0.6/30" }
