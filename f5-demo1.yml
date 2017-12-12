@@ -38,7 +38,18 @@ vpc_list:
             public_ip: false
         tags:
           Owner: "{{ cloud_name }}"
-          groups: ssh
+          groups: web
+      - name: "{{ cloud_name }}_host2"
+        size: micro
+        image: rhel7
+        key_name: "{{ cloud_name }}"
+        interfaces:
+          - subnet: "{{ cloud_name }}-inside"
+            acl: host-acl
+            public_ip: false
+        tags:
+          Owner: "{{ cloud_name }}"
+          groups: web
       - name: "{{ cloud_name }}_F5"
         size: medium
         image: f5-25-good
@@ -57,5 +68,8 @@ vpc_list:
           Owner: "{{ cloud_name }}"
           network_os: f5
           groups: f5
+pools:
+  - { name: web_pool, group: web }
+
 nat_rules:
   - { host: "{{ cloud_name }}_rtr", snat_interface: "{{ vnf_outside_interface }}", snat_port: 80, dnat_instance: "{{ cloud_name }}_host1", dnat_port: 80 }

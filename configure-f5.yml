@@ -32,6 +32,13 @@
         host: "{{ ansible_host }}"
         timeout: 600
 
+    # Changing admin password
+    # - name: Set the BigIP admin password
+    #   expect:
+    #     command: ssh -i "{{ cloud_name }}_key" -o StrictHostKeyChecking=no admin@{{ ansible_host }} "modify auth password admin ; save sys config"
+    #     responses:
+    #       (?i)password: "{{ admin_password }}"
+
     # - name: Set the admin password on the F5
     #   raw: show
     #   args:
@@ -47,6 +54,9 @@
           password: "{{ admin_password }}"
           validate_certs: no
           include: "system_info,software,self_ip"
+        register: bigip_facts
+
+    - debug: var=bigip_facts
 
     - name: Set the hostname of the BIG-IP
       bigip_hostname:
