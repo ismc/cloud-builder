@@ -33,11 +33,11 @@
         timeout: 600
 
     # Changing admin password
-    # - name: Set the BigIP admin password
-    #   expect:
-    #     command: ssh -i "{{ cloud_name }}_key" -o StrictHostKeyChecking=no admin@{{ ansible_host }} "modify auth password admin ; save sys config"
-    #     responses:
-    #       (?i)password: "{{ admin_password }}"
+    - name: Set the BigIP admin password
+      expect:
+        command: ssh -i "{{ cloud_name }}_key" -o StrictHostKeyChecking=no admin@"{{ ansible_host }}" modify auth password admin ; save sys config
+        responses:
+          (?i)password: "{{ admin_password }}"
 
     # - name: Set the admin password on the F5
     #   raw: show
@@ -45,16 +45,16 @@
     #     executable: ''
     #   register: result
 
-    - debug: var=hostvars[inventory_hostname]
+    # - debug: var=hostvars[inventory_hostname]
 
     - name: Get all of the facts from my BIG-IP
       bigip_facts:
-          server: "{{ ansible_host }}"
-          user: "{{ admin_username }}"
-          password: "{{ admin_password }}"
-          validate_certs: no
-          include: "system_info,software,self_ip"
-        register: bigip_facts
+        server: "{{ ansible_host }}"
+        user: "{{ admin_username }}"
+        password: "{{ admin_password }}"
+        validate_certs: no
+        include: "system_info,software,self_ip"
+      register: bigip_facts
 
     - debug: var=bigip_facts
 
@@ -66,36 +66,36 @@
         hostname: "{{ inventory_hostname }}.localhost.localdomain"
 
 
-    - name: Add a new node
-      bigip_node:
-        server: "{{ ansible_host }}"
-        user: "{{ admin_username }}"
-        password: "{{ admin_password }}"
-        validate_certs: no
-        state: "present"
-        partition: "Common"
-        host: "{{ interfaces[0].private_ip_address }}"
-        name: "{{ interfaces[0].private_ip_address }}"
-
-    - name: Create the pool1 pool
-      bigip_pool:
-        server: "{{ ansible_host }}"
-        user: "{{ admin_username }}"
-        password: "{{ admin_password }}"
-        validate_certs: no
-        name: "pool1"
-
-    - name: Add host to pool member
-      bigip_pool_member:
-        server: "{{ ansible_host }}"
-        user: "{{ admin_username }}"
-        password: "{{ admin_password }}"
-        validate_certs: no
-        pool: "pool1"
-        partition: "Common"
-        host: "{{ hostvars['smc_f5_demo_host1'].interfaces[0].private_ip_address }}"
-        port: 80
-        description: "web server"
-        connection_limit: 100
-        rate_limit: 50
-        ratio: 2
+    # - name: Add a new node
+    #   bigip_node:
+    #     server: "{{ ansible_host }}"
+    #     user: "{{ admin_username }}"
+    #     password: "{{ admin_password }}"
+    #     validate_certs: no
+    #     state: "present"
+    #     partition: "Common"
+    #     host: "{{ interfaces[0].private_ip_address }}"
+    #     name: "{{ interfaces[0].private_ip_address }}"
+    #
+    # - name: Create the pool1 pool
+    #   bigip_pool:
+    #     server: "{{ ansible_host }}"
+    #     user: "{{ admin_username }}"
+    #     password: "{{ admin_password }}"
+    #     validate_certs: no
+    #     name: "pool1"
+    #
+    # - name: Add host to pool member
+    #   bigip_pool_member:
+    #     server: "{{ ansible_host }}"
+    #     user: "{{ admin_username }}"
+    #     password: "{{ admin_password }}"
+    #     validate_certs: no
+    #     pool: "pool1"
+    #     partition: "Common"
+    #     host: "{{ hostvars['smc_f5_demo_host1'].interfaces[0].private_ip_address }}"
+    #     port: 80
+    #     description: "web server"
+    #     connection_limit: 100
+    #     rate_limit: 50
+    #     ratio: 2

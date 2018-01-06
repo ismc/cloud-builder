@@ -83,8 +83,7 @@
           pool: "ansible_pool1"
           description: Test Virtual Server
       register: vserver_results
-      changed_when: fqvs_name not in fact_f5.ansible_facts.virtual_server.keys()
-      failed_when: fqvs_name in fact_f5.ansible_facts.virtual_server.keys()
+      when: fqvs_name not in fact_f5.ansible_facts.virtual_server.keys()
 
     #
     # - name: Set the hostname of the BIG-IP

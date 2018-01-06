@@ -6,7 +6,8 @@ cloud_region: us-east-1
 # cloud_dns_zone: rhdemo.io
 # cloud_dns_domain: "{{ cloud_name }}.{{ cloud_dns_zone }}"
 # cloud_dns_provider: route53
-inventory_dir: "{{ playbook_dir }}/inventory/{{ cloud_name }}"
+# inventory_dir: "{{ playbook_dir }}/inventory/{{ cloud_name }}"
+
 acl_dict:
   host-acl:
     - { src_ip: 0.0.0.0/0, proto: all }

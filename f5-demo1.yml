@@ -28,6 +28,17 @@ vpc_list:
       - { name: "{{ cloud_name }}-outside", cidr: "172.18.0.0/24", az: "{{ cloud_region }}a" }
       - { name: "{{ cloud_name }}-inside", cidr: "172.18.1.0/24", az: "{{ cloud_region }}a" }
     instances:
+      - name: "{{ cloud_name }}_control"
+        size: micro
+        image: rhel7
+        key_name: "{{ cloud_name }}"
+        interfaces:
+          - subnet: "{{ cloud_name }}-inside"
+            acl: host-acl
+            public_ip: true
+        tags:
+          Owner: "{{ cloud_name }}"
+          groups: web
       - name: "{{ cloud_name }}_host1"
         size: micro
         image: rhel7
