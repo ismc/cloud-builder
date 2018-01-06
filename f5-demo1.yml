@@ -3,6 +3,10 @@ cloud_user: ec2-user
 cloud_name: smc_f5_demo
 cloud_provider: aws
 cloud_region: us-east-1
+network_username: admin
+# Use Ansible Vault when encryption is required:
+network_password: Cisc0123
+
 # cloud_dns_zone: rhdemo.io
 # cloud_dns_domain: "{{ cloud_name }}.{{ cloud_dns_zone }}"
 # cloud_dns_provider: route53
@@ -38,7 +42,7 @@ vpc_list:
             public_ip: true
         tags:
           Owner: "{{ cloud_name }}"
-          groups: web
+          groups: control
       - name: "{{ cloud_name }}_host1"
         size: micro
         image: rhel7
@@ -49,7 +53,7 @@ vpc_list:
             public_ip: false
         tags:
           Owner: "{{ cloud_name }}"
-          groups: web
+          groups: app
       - name: "{{ cloud_name }}_host2"
         size: micro
         image: rhel7
@@ -60,7 +64,7 @@ vpc_list:
             public_ip: false
         tags:
           Owner: "{{ cloud_name }}"
-          groups: web
+          groups: app
       - name: "{{ cloud_name }}_F5"
         size: medium
         image: f5-25-good

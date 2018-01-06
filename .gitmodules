@@ -1,9 +1,6 @@
 [submodule "roles/cloud-config"]
 	path = roles/cloud-config
 	url = git@github.com:ismc/cloud-config.git
-[submodule "roles/cloud-inventory"]
-	path = roles/cloud-inventory
-	url = git@github.com:ismc/cloud-inventory.git
 [submodule "roles/cloud-destroy"]
 	path = roles/cloud-destroy
 	url = git@github.com:ismc/cloud-destroy.git

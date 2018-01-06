@@ -6,7 +6,7 @@
   tasks:
 
     - include_role:
-        name: cloud-inventory
+        name: cloud-facts
       vars:
         - cloud_vpc_name: "{{ vpc_item.name }}"
         - cloud_vpc_data: "{{ vpc_item }}"
@@ -21,9 +21,6 @@
   hosts: f5
   connection: local
   gather_facts: False
-  vars:
-    admin_username: admin
-    admin_password: Cisc0123
   tasks:
 
     - name: wait for SSH prompt (timeout 10min)
@@ -37,7 +34,7 @@
       expect:
         command: ssh -i "{{ cloud_name }}_key" -o StrictHostKeyChecking=no admin@"{{ ansible_host }}" modify auth password admin ; save sys config
         responses:
-          (?i)password: "{{ admin_password }}"
+          (?i)password: "{{ network_password }}"
 
     # - name: Set the admin password on the F5
     #   raw: show
